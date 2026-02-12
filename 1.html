@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Емоції у кольорі</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .background-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at top, #1a1a2e 0%, #0a0a0a 50%);
+            z-index: 0;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: drift 15s infinite linear;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 60px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px 80px;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        h1 {
+            font-size: 4.5em;
+            font-weight: 300;
+            letter-spacing: 8px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            margin-top: 40px;
+            letter-spacing: 2px;
+        }
+
+        .emotions-section {
+            margin: 100px 0;
+        }
+
+        .section-title {
+            font-size: 2.5em;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 80px;
+            letter-spacing: 4px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .emotion-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px 40px;
+            text-align: center;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emotion-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .emotion-card:hover::before {
+            left: 100%;
+        }
+
+        .emotion-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .emotion-color {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .emotion-card:hover .emotion-color {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px currentColor;
+        }
+
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .background-image.active {
+            opacity: 0.4;
+        }
+
+        .emotion-card h3 {
+            font-size: 1.8em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+
+        .emotion-card p {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.8;
+            font-size: 1em;
+            font-weight: 300;
+        }
+
+        .palette-section {
+            margin: 120px 0;
+            padding: 80px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .color-spectrum {
+            display: flex;
+            height: 300px;
+            margin: 60px 0;
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .color-bar {
+            flex: 1;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .color-bar:hover::after {
+            opacity: 0;
+        }
+
+        .color-bar:hover {
+            flex: 1.5;
+        }
+
+        .color-name {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            font-weight: 300;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .color-bar:hover .color-name {
+            opacity: 1;
+        }
+
+        .vision-section {
+            margin: 100px 0;
+            text-align: center;
+        }
+
+        .vision-text {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2em;
+            line-height: 2;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9em;
+            letter-spacing: 2px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 100px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .emotions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            h1 {
+                font-size: 3em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 30px;
+            }
+
+            h1 {
+                font-size: 2.5em;
+                letter-spacing: 4px;
+            }
+
+            .emotions-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .color-spectrum {
+                height: 200px;
+                flex-direction: column;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-gradient"></div>
+    <div class="background-image" id="bgImage"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <h1>Емоції у кольорі</h1>
+            <p class="subtitle">Візуальна інтерпретація внутрішнього світу</p>
+        </header>
+
+        <section class="emotions-section">
+            <h2 class="section-title">Кольори моєї мрії</h2>
+            <div class="emotions-grid">
+                <div class="emotion-card" data-bg="red">
+                    <div class="emotion-color" style="background: linear-gradient(135deg, #ff6b6b, #ee5a6f);"></div>
+                    <h3>Пристрасть</h3>
+                    <p>Інтенсивність червоного відображає глибину почуттів, енергію життя та силу бажань, що надихають на досягнення цілей.</p>
+                </div>
+
+                <div class="emotion-card" data-bg="blue">
+                    <div class="emotion-color" style="background: linear-gradient(135deg, #4facfe, #00a8ff);"></div>
+                    <h3>Ясність</h3>
+                    <p>Блакитні відтінки символізують чистоту думок, прозорість намірів та спокійну впевненість у обраному шляху.</p>
+                </div>
+
+                <div class="emotion-card" data-bg="green">
+                    <div class="emotion-color" style="background: linear-gradient(135deg, #43e97b, #38d16a);"></div>
+                    <h3>Ріст</h3>
+                    <p>Зелений колір природи втілює постійний розвиток, оновлення та гармонійну взаємодію з навколишнім світом.</p>
+                </div>
+
+                <div class="emotion-card" data-bg="purple">
+                    <div class="emotion-color" style="background: linear-gradient(135deg, #f093fb, #c471ed);"></div>
+                    <h3>Креативність</h3>
+                    <p>Фіолетові тони розкривають простір для уяви, нестандартного мислення та реалізації творчих ідей.</p>
+                </div>
+
+                <div class="emotion-card" data-bg="yellow">
+                    <div class="emotion-color" style="background: linear-gradient(135deg, #feca57, #ff9f43);"></div>
+                    <h3>Оптимізм</h3>
+                    <p>Жовтий і помаранчевий несуть тепло, позитивну енергію та віру в можливість змін на краще.</p>
+                </div>
+
+                <div class="emotion-card" data-bg="indigo">
+                    <div class="emotion-color" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7);"></div>
+                    <h3>Глибина</h3>
+                    <p>Темні відтінки індиго відображають філософське осмислення життя, інтроспекцію та пошук смислів.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="palette-section">
+            <h2 class="section-title">Спектр можливостей</h2>
+            <div class="color-spectrum">
+                <div class="color-bar" style="background: linear-gradient(to bottom, #ff6b6b, #c92a2a);">
+                    <span class="color-name">ЕНЕРГІЯ</span>
+                </div>
+                <div class="color-bar" style="background: linear-gradient(to bottom, #feca57, #e67e22);">
+                    <span class="color-name">ТЕПЛО</span>
+                </div>
+                <div class="color-bar" style="background: linear-gradient(to bottom, #48dbfb, #0984e3);">
+                    <span class="color-name">СПОКІЙ</span>
+                </div>
+                <div class="color-bar" style="background: linear-gradient(to bottom, #1dd1a1, #10ac84);">
+                    <span class="color-name">БАЛАНС</span>
+                </div>
+                <div class="color-bar" style="background: linear-gradient(to bottom, #a29bfe, #6c5ce7);">
+                    <span class="color-name">МІСТИКА</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="vision-section">
+            <h2 class="section-title">Візія майбутнього</h2>
+            <p class="vision-text">
+                Кожен колір — це не просто відтінок, а цілий світ емоцій, переживань та прагнень. 
+                У моїй мрії кольори поєднуються в гармонійну композицію, де реальність переплітається з фантазією, 
+                створюючи простір для розвитку, творчості та внутрішнього спокою. 
+                Це бачення майбутнього, де кожна людина знаходить свій унікальний відтінок щастя.
+            </p>
+        </section>
+
+        <footer>
+            <p>КОЛЬОРИ МОЄЇ МРІЇ © 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Фонові зображення для карток
+        const backgrounds = {
+            red: 'depositphotos_28999907-stock-photo-sillhouette-couple.jpg',
+            blue: 'photo-1534447677768-be436bb09401.jpg',
+            green: 'photo-1441974231531-c6227db76b6e.jpg',
+            purple: 'photo-1522383225653-ed111181a951.jpg',
+            yellow: 'photo-1503803548695-c2a7b4a5b875.jpg',
+            indigo: 'photo-1462331940025-496dfbfc7564.jpg'
+        };
+
+        const bgImage = document.getElementById('bgImage');
+        const emotionCards = document.querySelectorAll('.emotion-card');
+
+        emotionCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const bgType = this.getAttribute('data-bg');
+                bgImage.style.backgroundImage = `url('${backgrounds[bgType]}')`;
+                bgImage.classList.add('active');
+            });
+
+            card.addEventListener('mouseleave', function() {
+                bgImage.classList.remove('active');
+            });
+        });
+
+        // Створення частинок
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Паралакс ефект
+        document.addEventListener('mousemove', (e) => {
+            const particles = document.querySelectorAll('.particle');
+            const mouseX = e.clientX / window.innerWidth - 0.5;
+            const mouseY = e.clientY / window.innerHeight - 0.5;
+            
+            particles.forEach((particle, index) => {
+                const speed = (index % 3 + 1) * 0.3;
+                const x = mouseX * speed * 30;
+                const y = mouseY * speed * 30;
+                particle.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        // Плавна анімація при скролі
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 1s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.emotion-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Інтерактивність кольорових барів
+        const colorBars = document.querySelectorAll('.color-bar');
+        colorBars.forEach(bar => {
+            bar.addEventListener('click', function() {
+                const gradient = this.style.background;
+                document.querySelector('.background-gradient').style.background = gradient;
+                
+                setTimeout(() => {
+                    document.querySelector('.background-gradient').style.background = 
+                        'radial-gradient(ellipse at top, #1a1a2e 0%, #0a0a0a 50%)';
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
